@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Hello, Django</title>
-        {% load static %}
-        <link rel="stylesheet" href="{% static '/sampleweb/site.css' %}"/>
-    </head>
-    <body>
-        <p class="message">
-            <strong>Hello there, {{ name }}!</strong> 
-        </p>
-        <p>It's {{ date | date:"l, d F, Y" }} at {{ date | time:"H:i:s" }}</p>
-    </body>
-</html>
+{% extends "sampleweb/layout.html" %}
+{% block title %}
+    Welcome - SampleWeb
+{% endblock %}
+{% block content %}
+    <p class="message">
+        <strong>Hello there, {{ name }}!</strong>
+    </p>
+    <p>It's {{ date | date:"l, d F, Y" }} at {{ date | time:"H:i:s" }}</p>
+{% endblock %}

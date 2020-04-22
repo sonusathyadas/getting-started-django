@@ -186,3 +186,84 @@ In production, Django will collect all static files from all applications in the
 	 ```
 2)  the Terminal, run the command `python manage.py collectstatic` and observe that `sampleweb/site.css` is copied into the top level `static_files` folder alongside `manage.py`.
 3) In practice, run `collectstatic` any time you change static files and before deploying into production.
+
+## Common layout for view templates 
+In web applications, multiple view pages will share a set of common elements such as navigation hyperlinks, headers, sidebar contents and footers. It will be difficult to manage the changes of those shared elements in all view if they are independently defined in each views. Django allows us to create a common layout template and inherit it to other view templates. Let's see how to setup a common layout for our web application.
+
+A base page template in Django contains all the shared parts of a set of pages, including references to CSS files, script files, and so forth. Base templates also define one or more block tags with content that extended templates are expected to override. A block tag is delineated by `{% block <name> %}` and `{% endblock %}` in both the base template and extended templates.
+
+1) In the `templates/sampleweb` folder, create a file named `layout.html` with the contents below, which contains blocks named "title" and "content". 
+	```
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>{% block title %}{% endblock %}</title>
+		{% load static %}
+		<link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}"/>
+	</head>
+
+	<body>
+	<div class="navbar">
+		<a href="{% url 'home' %}" class="navbar-brand">Home</a>
+		<a href="{% url 'about' %}" class="navbar-item">About</a>
+		<a href="{% url 'contact' %}" class="navbar-item">Contact</a>
+	</div>
+
+	<div class="body-content">
+		{% block content %}
+		{% endblock %}
+		<hr/>
+		<footer>
+			<p>Sample Django website</p>
+		</footer>
+	</div>
+	</body>
+	</html>
+	```
+2) For styling add the following css styles in `static\sampleweb\site.css` file.
+	```
+	.navbar {
+		background-color: lightslategray;
+		font-size: 1em;
+		font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+		color: white;
+		padding: 8px 5px 8px 5px;
+	}
+
+	.navbar a {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.navbar-brand {
+		font-size: 1.2em;
+		font-weight: 600;
+	}
+
+	.navbar-item {
+		font-variant: small-caps;
+		margin-left: 30px;
+	}
+
+	.body-content {
+		padding: 5px;
+		font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+	```
+3) Update the `templates\welcome.html` with the following code. You will define the `title` block and `content` blocks with proper html contents.
+	```
+	{% extends "sampleweb/layout.html" %}
+	{% block title %}
+		Welcome - SampleWeb
+	{% endblock %}
+	{% block content %}
+		<p class="message">
+			<strong>Hello there, {{ name }}!</strong>
+		</p>
+		<p>It's {{ date | date:"l, d F, Y" }} at {{ date | time:"H:i:s" }}</p>
+	{% endblock %}
+	```
+4) Run the application and navigate to the `http://localhost:8000/welcome/guest` url. You will see the navigation bar with hyperlinks and footer. You can repeat the step 3 for applying layout to all pages. 
+
+
