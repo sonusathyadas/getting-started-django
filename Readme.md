@@ -55,8 +55,9 @@ To create a minimal Django app, then, it's necessary to first create the Django 
 
 To add a new Django web app to the project you have created, follow the steps:
 1) Open the VS Code Integrated Terminal. Ensure that the terminal is in virual environment. Run the following command to create a new web app in the Django project.
-	>  python manage.py startapp sampleweb
-
+	```
+	python manage.py startapp sampleweb
+	```
 2) The command creates a folder called `sampleweb` that contains a number of code files and one subfolder.
 	* **views.py** - contains the functions that define pages in your web app
 	* **models.py** - contains classes defining your data objects
@@ -122,7 +123,9 @@ It is a best practice to use the HTML templates to render the views. It reduces 
 	</html>
 	```
 4) At the top of `views.py`, add the following import statement:
-	> from django.shortcuts import render
+	```
+	from django.shortcuts import render
+	```
 5) Also, in `views.py` file add a new view method `welcome` with the following code. It uses the `render` from `django.shorcuts` module to render the view with a model object. A url parameter `name` is passed to the `welcome` page. We will configure the route in the `urls.py` file. 
 	```
 	def welcome(request, name):
@@ -145,9 +148,13 @@ It is a best practice to use the HTML templates to render the views. It reduces 
 Static files are pieces of content that your web app returns as-is for certain requests, such as CSS files. Serving static files requires that the `INSTALLED_APPS` list in `settings.py` contains `django.contrib.staticfiles`, which is included by default.
 
 1) In the project's `website/urls.py`, add the following import statement:
- 	> `from django.contrib.staticfiles.urls import staticfiles_urlpatterns`
+ 	```
+	from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+	 ```
 2) In that same file, add the following line at the end, which includes standard static file URLs to the list that the project recognizes:
-	> `urlpatterns += staticfiles_urlpatterns()`
+	```
+	urlpatterns += staticfiles_urlpatterns()
+	```
 3) In the `static/sampleweb` folder, create a file named `site.css` with the following contents.
 	```
 	.message {
@@ -174,6 +181,8 @@ Static files are pieces of content that your web app returns as-is for certain r
 ## Static files in production server
 In production, Django will collect all static files from all applications in the project and put into a separate location. So we can use a dedicated static file server that improves the performance of the application. To do so, we need to run the `python manage.py collectstatic` command to put all files in to a specific location. This is required only when you deploy the application in production server, in development, we serve static files from application specific locations. 
 1) In `website/settings.py`, add the following line that defines a location where static files are collected when you use the collectstatic command:
-	> STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+	```
+	 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
+	 ```
 2)  the Terminal, run the command `python manage.py collectstatic` and observe that `sampleweb/site.css` is copied into the top level `static_files` folder alongside `manage.py`.
 3) In practice, run `collectstatic` any time you change static files and before deploying into production.
