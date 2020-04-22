@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Django Demo</title>
-</head>
-<body>
+{% extends "sampleweb/layout.html" %}
+{% block title %}
+    Friends list - SampleWeb
+{% endblock %}
+{% block content %}
+    <h2>Friends list</h2>
     {% for item in friends %}
-    <p>{{item | upper}}</p>
+        <p>{{item | upper}}</p>
     {% endfor %}
-</body>
-</html>
+{% endblock %}

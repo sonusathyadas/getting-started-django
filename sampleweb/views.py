@@ -5,7 +5,8 @@ from django.template import loader
 
 # Create your views here.
 def home(request):
-    return HttpResponse("Hello, Django!")
+    #return HttpResponse("Hello, Django!")
+    return render(request, 'sampleweb/home.html')
 
 def welcome(request, name):        
     return render(request,'sampleweb/welcome.html',
