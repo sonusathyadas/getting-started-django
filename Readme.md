@@ -200,7 +200,7 @@ A base page template in Django contains all the shared parts of a set of pages, 
 		<meta charset="utf-8"/>
 		<title>{% block title %}{% endblock %}</title>
 		{% load static %}
-		<link rel="stylesheet" type="text/css" href="{% static 'hello/site.css' %}"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'sampleweb/site.css' %}"/>
 	</head>
 
 	<body>
