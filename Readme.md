@@ -1,4 +1,6 @@
-# Setting up Python Virtual Environment in VS Code
+# Django Tutorial - Getting started with Django
+
+## Setting up Python Virtual Environment in VS Code
 -------------
 To create and run Django projects you can use a Virtual environment. Using a virtual environment avoids installing Django into a global Python environment and gives you exact control over the libraries used in an application. In virtual environment you can create a `requirements.txt` to reproduce files of virtual environement  to another development environment. 
 
@@ -16,7 +18,7 @@ Follow the steps to setup the Django project in VS Code:
 	> `python -m pip install django`
 9) You now have a self-contained environment ready for writing Django code. VS Code activates the environment automatically when you use `Terminal: Create New Integrated Terminal`.
 
-# Create a simple Django project
+## Create a simple Django project
 In Django terminology, a "Django project" is composed of several site-level configuration files along with one or more "apps" that you deploy to a web host to create a full web application. A Django project can contain multiple apps, each of which typically has an independent function in the project, and the same app can be in multiple Django projects.
 
 To create a minimal Django app, then, it's necessary to first create the Django project to serve as the container for the app, then create the app itself. For both purposes, you use the Django administrative utility, `django-admin`, which is installed when you install the Django package.
@@ -49,7 +51,7 @@ To create a minimal Django app, then, it's necessary to first create the Django 
 5) When you run the project for the first time it creates a `db.sqlite3` file. We will discuss about this file later.
 6) Close the browser and press `Ctrl+C` to stop the server.
 
-# Create a web app in the Django Project
+## Create a web app in the Django Project
 
 To add a new Django web app to the project you have created, follow the steps:
 1) Open the VS Code Integrated Terminal. Ensure that the terminal is in virual environment. Run the following command to create a new web app in the Django project.
@@ -90,7 +92,7 @@ To add a new Django web app to the project you have created, follow the steps:
 	```
 6) In the VS Code Terminal, again with the virtual environment activated, run the development server with `python manage.py runserver` and open a browser to `http://127.0.0.1:8000/` to see a page that renders "Hello, Django".
 
-# Using templates to render the views
+## Using templates to render the views
 It is a best practice to use the HTML templates to render the views. It reduces the chance of Cross Site Scripting (XSS) attacks. In Django, a template is an HTML file that contains placeholders for values that the code provides at run time. The Django templating engine then takes care of making the substitutions when rendering the page, and provides automatic escaping to prevent XSS attacks.
 
 1) In the `website/settings.py` file, locate the `INSTALLED_APPS` list and add the name of the web application you created, `ie: sampleweb` , which makes sure the project knows about the app so it can handle templating:
@@ -139,7 +141,7 @@ It is a best practice to use the HTML templates to render the views. It reduces 
 	```
 7) Run the application by running the `python manage.py runserver` command. Open browser and test the url `http://localhost:8000/welcome/guest`.
 
-# Serving static files
+## Serving static files
 Static files are pieces of content that your web app returns as-is for certain requests, such as CSS files. Serving static files requires that the `INSTALLED_APPS` list in `settings.py` contains `django.contrib.staticfiles`, which is included by default.
 
 1) In the project's `website/urls.py`, add the following import statement:
@@ -169,10 +171,9 @@ Static files are pieces of content that your web app returns as-is for certain r
 	```
 6) Run the application and test the url `http://localhost:8000/welcome/guest`
 
-# Static files in production server
+## Static files in production server
 In production, Django will collect all static files from all applications in the project and put into a separate location. So we can use a dedicated static file server that improves the performance of the application. To do so, we need to run the `python manage.py collectstatic` command to put all files in to a specific location. This is required only when you deploy the application in production server, in development, we serve static files from application specific locations. 
 1) In `website/settings.py`, add the following line that defines a location where static files are collected when you use the collectstatic command:
 	> STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 2)  the Terminal, run the command `python manage.py collectstatic` and observe that `sampleweb/site.css` is copied into the top level `static_files` folder alongside `manage.py`.
 3) In practice, run `collectstatic` any time you change static files and before deploying into production.
-
