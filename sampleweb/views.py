@@ -4,11 +4,13 @@ from datetime import datetime
 from django.template import loader
 from sampleweb.forms import TodoForm
 from sqlite3 import IntegrityError
+from django.views.generic import ListView
+from sampleweb.models import Todo
 
 # Create your views here.
-def home(request):
-    #return HttpResponse("Hello, Django!")
-    return render(request, 'sampleweb/home.html')
+# def home(request):
+#     #return HttpResponse("Hello, Django!")
+#     return render(request, 'sampleweb/home.html')
 
 def welcome(request, name):        
     return render(request,'sampleweb/welcome.html',
@@ -52,3 +54,10 @@ def add_todo(request):
                 return render(request,"sampleweb/add-todo.html", {"form": form})
     else:
         return render(request, "sampleweb/add-todo.html", {"form": form})
+
+class HomeListView(ListView):
+    """Renders the home page, with a list of all todos."""
+    model = Todo
+    def get_context_data(self, **kwargs):
+        context = super(HomeListView, self).get_context_data(**kwargs)
+        return context

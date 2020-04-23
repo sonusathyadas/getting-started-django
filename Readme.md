@@ -365,3 +365,35 @@ Each field takes some attributes, like `max_length`. The `blank=True` attribute 
 	```
 13) Re-run the application and test the add todo page.
 
+14) Open the `views.py` and add a new class called `HomeListView`. HomeListView class inherit the `django.views.generic.ListView` class. Import the ListView class in the `views.py` file. You also requires to import the `Todo` model from `sampleweb.models`.
+	```
+	from django.views.generic import ListView
+	from sampleweb.models import Todo
+	```
+15) Add the `HomeListView` class in `views.py` file
+	```
+	class HomeListView(ListView):
+		"""Renders the home page, with a list of all todos."""
+		model = Todo
+
+		def get_context_data(self, **kwargs):
+			context = super(HomeListView, self).get_context_data(**kwargs)
+			return context
+	```
+16) In the app's urls.py, import the data model:
+	```
+	from sampleweb.models import Todo
+	```
+17) Also in `urls.py`, make a variable for the new view, which retrieves the five most recent Todo objects in ascending order, and then provides a name for the data in the template context (todo_list), and identifies the template to use:
+	```
+	home_list_view = views.HomeListView.as_view(queryset=Todo.objects.order_by("added_date")
+    	,context_object_name="todo_list",
+    	template_name="sampleweb/home.html")
+
+	```
+18) In `urls.py`, modify the path to the home page to use the `home_list_view` variable:
+	```
+    # Replace the existing path for ""
+    path("", home_list_view, name="home"),
+	```
+19) Start the app and open a browser to the home page, which should now display list of todos.

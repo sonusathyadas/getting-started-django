@@ -3,6 +3,27 @@
     Home - SampleWeb
 {% endblock %}
 {% block content %}
-    <h2>Home page</h2>
+    {% if todo_list %}
+    <table class="todo_list">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Completed</th>
+            <th>Added Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for todo in todo_list %}
+            <tr>
+                <td>{{ todo.title }}</td>
+                <td><input type="checkbox" disabled checked="{{ todo.is_done }}"/></td>
+                <td>{{ todo.added_date |date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No todos have been added yet</p>
+    {% endif %}
     
 {% endblock %}
