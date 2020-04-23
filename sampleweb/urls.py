@@ -6,5 +6,6 @@ urlpatterns=[
     path("welcome/<name>", views.welcome, name="welcome"),
     path("friends", views.friends_list, name="friendslist"),
     path("about", views.about, name="about"),
-    path("contact", views.contact, name="contact")
+    path("contact", views.contact, name="contact"),
+    path("todo/", views.add_todo, name="addtodo"),
 ]

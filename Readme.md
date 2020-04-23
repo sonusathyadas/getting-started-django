@@ -266,4 +266,102 @@ A base page template in Django contains all the shared parts of a set of pages, 
 	```
 4) Run the application and navigate to the `http://localhost:8000/welcome/guest` url. You will see the navigation bar with hyperlinks and footer. You can repeat the step 3 for applying layout to all pages. 
 
+## Working with data models and database migrations
+In Django, a model is a Python class, derived from `django.db.models.Model`, that represents a specific database object, typically a table. You place these classes in an app's `models.py` file.
+Your work on databases are done using the models defined using the code. Whenever you update the models you can perform a Django 'migration' operation to sync the changes to the database. It contains the following operations. 
+1. Make changes to the models in your `models.py` file.
+2. Run `python manage.py makemigrations` to generate scripts in the migrations folder that migrate the database from its current state to the new state.
+3. Run `python manage.py migrate` to apply the scripts to the actual database.
+
+The migration scripts effectively record all the incremental changes you make to your data models over time. By applying the migrations, Django updates the database to match your models. Because each incremental change has its own script, Django can automatically migrate any previous version of a database (including a new database) to the current version. You can use the Django administrative utility `loaddata` to perform database initializations after the migration is completed. 
+
+When using the `db.sqlite3` file, you can also work directly with the database using a tool like the `SQLite browser`. It's fine to add or delete records in tables using such a tool, but avoid making changes to the database schema because the database will then be out of sync with your app's models. Instead, change the models, run `makemigrations`, then run `migrate`. 
+
+> Note: When you deploy the application in multi-server environmet or while performing scaling and geo-replication it is adviced to use some other databases instead of the `SQLite`. SQLite is good for development purpose or applications that have less data traffic typically less than 199K per day.
+
+### Django models
+A Django model is again a Python class derived from `django.db.model.Models`, which you place in the app's `models.py` file. In the database, each model is automatically given a unique ID field named `id`. All other fields are defined as properties of the class using types from `django.db.models` such as `CharField` (limited text), `TextField` (unlimited text), `EmailField`, `URLField`, `IntegerField`, `DecimalField`, `BooleanField`, `DateTimeField`, `ForeignKey` and `ManyToMany`. 
+
+Each field takes some attributes, like `max_length`. The `blank=True` attribute means the field is optional; `null=true` means that a value is optional. There is also a `choices` attribute that limits values to values in an array of data value/display value tuples.
+
+1) Open the `sampleweb\models.py` file and update the code with the following 
+	```
+	from django.db import models
+
+	# Create your models here.
+
+	class Todo(models.Model):
+		title = models.CharField(max_length=250)
+		is_done = models.BooleanField(default=False)
+
+		def __str__(self):
+			"""Returns the string representation of the todo object"""
+			return f"Title={self.title} , Completed = {self.is_done}"
+
+	```
+2) Open the Terminal in the virutual environment and run the following command
+	> python manage.py makemigrations
+3) Run the migration command to update the model changes to database.
+	> python manage.py migrate
+4) You can see the migration files generated in the `migrations` folder.
+5) Add a form page to the app through which you can add a todo item. You then modify the home page to display those todo items. In the `sampleweb` folder (where the views.py is located), create a new file `forms.py` and add the following code to it.
+	```
+	from sampleweb.models import Todo
+	from django import forms
+
+	class TodoForm(forms.ModelForm):
+		class Meta:
+			model = Todo
+			fields = ('title', 'is_done')
+	```
+6) Open the `views.py` and add a new method for handling the add todo GET and POST actions.
+	```
+	def add_todo(request):
+    form = TodoForm(request.POST or None)
+
+    if request.method == "POST":
+        if form.is_valid():            
+            todoitem = form.save(commit=False) # save posted data to todo model object
+            print(todoitem)            
+            todoitem.save()
+            return redirect("home")
+    else:
+        return render(request, "sampleweb/add-todo.html", {"form": form})
+	```
+7) Now, you need to add a new route to the `urls.py` file. 
+	```
+	path("todo/", views.add_todo, name="addtodo")
+	```
+8) Open the `templates\sampleweb\layout.html` and add a new hyperlink in the navigation bar.
+	```
+	<a href="{% url 'addtodo' %}" class="navbar-item">Add Todo</a>
+	```
+9) Run the application and navigate to `http://localhost:8000/todo`. Provide the value for title and is_done and submit. The data will be saved to the database using the `add_tod` view method and redirects to `home` view.
+10) You can now make changes in your model and execute migrations to sync the changes with database. Open the `models.py` and add a new field to `Todo` model.
+	```
+	added_date = models.DateTimeField(null=True)
+	```
+11) Run the following commands to generate migration files and execute it
+	> python manage.py makemigrations
+	> python manage.py migrate
+
+12) This will add a new column to the table. You also need to update the `add_todo` method in the `views.py` as follows. We will explicitly add the current time to the field `added_date`. In the `forms.py` we dont need to include the `added_date` in the fields list as it does not require a textbox field to accept value from user.
+	```
+	def add_todo(request):
+		form = TodoForm(request.POST or None)
+
+		if request.method == "POST":
+			if form.is_valid():       
+				try:     
+					todoitem = form.save(commit=False)            
+					todoitem.added_date = datetime.now() # add the current date, not a field in form					
+					todoitem.save()
+					return redirect("home")
+				except IntegrityError as e:
+					print(e)
+					return render(request,"sampleweb/add-todo.html", {"form": form})
+		else:
+			return render(request, "sampleweb/add-todo.html", {"form": form})
+	```
+13) Re-run the application and test the add todo page.
 
